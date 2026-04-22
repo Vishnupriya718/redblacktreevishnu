@@ -6,7 +6,7 @@
 
 using namespace std;
 
-// STEP 1: Node
+// Node
 enum Color { RED, BLACK };
 
 struct Node {
@@ -26,3 +26,23 @@ struct Node {
         parent = nullptr;
     }
 };
+// tree class
+class RBTree {
+private:
+    Node* root;
+
+    void rotateLeft(Node*& node);
+    void rotateRight(Node*& node);
+    void fixInsert(Node*& node);
+
+public:
+    RBTree();
+
+    void insert(int data);
+    void readFromFile(char filename[]);
+    void printTree(Node* root, int space = 0);
+
+    Node* getRoot();
+};
+
+#endif
