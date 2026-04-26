@@ -17,12 +17,17 @@ int main() {
         if (choice == 1) {
             cout << "Enter number: ";
             cin >> number;
-            tree.insert(number);
+
+            if (number >= 1 && number <= 999)
+                tree.insert(number);
+            else
+                cout << "Number must be 1-999." << endl;
         }
 
         else if (choice == 2) {
             cout << "Filename: ";
             cin >> filename;
+
             tree.readFromFile(filename);
         }
 
