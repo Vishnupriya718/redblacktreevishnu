@@ -86,3 +86,73 @@ void RBTree::printTree(Node* root, int space) {
 
     printTree(root->left, space);
 }
+
+// ROTATE LEFT
+// Moves a node down to the left
+void RBTree::rotateLeft(Node*& node) {
+
+    // Get right child
+    Node* rightChild = node->right;
+
+    // Move right child's left subtree
+    node->right = rightChild->left;
+
+    // Update parent if subtree exists
+    if (rightChild->left != nullptr)
+        rightChild->left->parent = node;
+
+    // Update parent pointer
+    rightChild->parent = node->parent;
+
+    // If node was root
+    if (node->parent == nullptr)
+
+        root = rightChild;
+
+    // If node was left child
+    else if (node == node->parent->left)
+
+        node->parent->left = rightChild;
+
+    // If node was right child
+    else
+
+        node->parent->right = rightChild;
+
+    // Put node on left of rightChild
+    rightChild->left = node;
+
+    // Update parent
+    node->parent = rightChild;
+
+}
+// ROTATE RIGHT
+// Mirror of rotateLeft
+void RBTree::rotateRight(Node*& node) {
+
+    Node* leftChild = node->left;
+
+    node->left = leftChild->right;
+
+    if (leftChild->right != nullptr)
+        leftChild->right->parent = node;
+
+    leftChild->parent = node->parent;
+
+    if (node->parent == nullptr)
+
+        root = leftChild;
+
+    else if (node == node->parent->right)
+
+        node->parent->right = leftChild;
+
+    else
+
+        node->parent->left = leftChild;
+
+    leftChild->right = node;
+
+    node->parent = leftChild;
+
+}
