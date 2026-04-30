@@ -38,6 +38,10 @@ void RBTree::insert(int data) {
 
     else
         parent->right = newNode;
+
+
+    // FIX RED-BLACK PROPERTIES
+    fixInsert(newNode);
 }
 
 // Read numbers from file
@@ -154,5 +158,97 @@ void RBTree::rotateRight(Node*& node) {
     leftChild->right = node;
 
     node->parent = leftChild;
+
+}
+// FIX INSERT
+// Fixes Red-Black Tree violations
+void RBTree::fixInsert(Node*& node) {
+
+    // While parent exists and is RED
+    while (node != root && node->parent->color == RED) {
+
+        Node* parent = node->parent;
+        Node* grandparent = parent->parent;
+
+        
+        // CASE: Parent is LEFT child
+        if (parent == grandparent->left) {
+
+            Node* uncle = grandparent->right;
+
+            // CASE 1: Uncle is RED
+            // Recolor and move up
+            if (uncle != nullptr && uncle->color == RED) {
+
+                parent->color = BLACK;
+                uncle->color = BLACK;
+                grandparent->color = RED;
+
+                node = grandparent;
+
+            }
+
+            else {
+
+                // CASE 2: Triangle
+                if (node == parent->right) {
+
+                    node = parent;
+                    rotateLeft(node);
+
+                }
+
+                // CASE 3: Line
+                parent->color = BLACK;
+                grandparent->color = RED;
+
+                rotateRight(grandparent);
+
+            }
+
+        }
+
+      
+        // CASE: Parent is RIGHT child
+       
+        else {
+
+            Node* uncle = grandparent->left;
+
+            // CASE 1: Uncle is RED
+            if (uncle != nullptr && uncle->color == RED) {
+
+                parent->color = BLACK;
+                uncle->color = BLACK;
+                grandparent->color = RED;
+
+                node = grandparent;
+
+            }
+
+            else {
+
+                // CASE 2: Triangle
+                if (node == parent->left) {
+
+                    node = parent;
+                    rotateRight(node);
+
+                }
+
+                // CASE 3: Line
+                parent->color = BLACK;
+                grandparent->color = RED;
+
+                rotateLeft(grandparent);
+
+            }
+
+        }
+
+    }
+
+    // Root must always be BLACK
+    root->color = BLACK;
 
 }
