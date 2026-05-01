@@ -165,11 +165,13 @@ void RBTree::rotateRight(Node*& node) {
 void RBTree::fixInsert(Node*& node) {
 
     // While parent exists and is RED
-    while (node != root && node->parent->color == RED) {
+    while (node != root && node->parent != nullptr && node->parent->color == RED) {
 
         Node* parent = node->parent;
         Node* grandparent = parent->parent;
-
+	// FIX: prevent crash
+        if (grandparent == nullptr)
+            break;
         
         // CASE: Parent is LEFT child
         if (parent == grandparent->left) {
