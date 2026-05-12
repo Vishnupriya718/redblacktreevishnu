@@ -203,6 +203,7 @@ void RBTree::fixInsert(Node*& node) {
                     // UPDATE POINTERS
                     node = parent;
                     parent = node->parent;
+		    grandparent = parent->parent;
                 }
 
                 // CASE 3: Line
@@ -241,6 +242,7 @@ void RBTree::fixInsert(Node*& node) {
                     // UPDATE POINTERS
                     node = parent;
                     parent = node->parent;
+		    grandparent = parent->parent;
                 }
 
                 // CASE 3: Line
