@@ -160,34 +160,37 @@ void RBTree::rotateRight(Node*& node) {
     node->parent = leftChild;
 
 }
+
 // FIX INSERT
 // Fixes Red-Black Tree violations
 void RBTree::fixInsert(Node*& node) {
 
-    // While parent exists and is RED
-    while (node != root && node->parent != nullptr && node->parent->color == RED) {
+    while (node != root &&
+           node->parent != nullptr &&
+           node->parent->color == RED) {
 
         Node* parent = node->parent;
         Node* grandparent = parent->parent;
-	// FIX: prevent crash
+
         if (grandparent == nullptr)
             break;
-        
-        // CASE: Parent is LEFT child
+
+        // ==========================
+        // Parent is LEFT child
+        // ==========================
         if (parent == grandparent->left) {
 
             Node* uncle = grandparent->right;
 
             // CASE 1: Uncle is RED
-            // Recolor and move up
-            if (uncle != nullptr && uncle->color == RED) {
+            if (uncle != nullptr &&
+                uncle->color == RED) {
 
                 parent->color = BLACK;
                 uncle->color = BLACK;
                 grandparent->color = RED;
 
                 node = grandparent;
-
             }
 
             else {
@@ -195,9 +198,11 @@ void RBTree::fixInsert(Node*& node) {
                 // CASE 2: Triangle
                 if (node == parent->right) {
 
-                    node = parent;
-                    rotateLeft(node);
+                    rotateLeft(parent);
 
+                    // UPDATE POINTERS
+                    node = parent;
+                    parent = node->parent;
                 }
 
                 // CASE 3: Line
@@ -205,27 +210,25 @@ void RBTree::fixInsert(Node*& node) {
                 grandparent->color = RED;
 
                 rotateRight(grandparent);
-
             }
-
         }
 
-      
-        // CASE: Parent is RIGHT child
-       
+        // ==========================
+        // Parent is RIGHT child
+        // ==========================
         else {
 
             Node* uncle = grandparent->left;
 
             // CASE 1: Uncle is RED
-            if (uncle != nullptr && uncle->color == RED) {
+            if (uncle != nullptr &&
+                uncle->color == RED) {
 
                 parent->color = BLACK;
                 uncle->color = BLACK;
                 grandparent->color = RED;
 
                 node = grandparent;
-
             }
 
             else {
@@ -233,9 +236,11 @@ void RBTree::fixInsert(Node*& node) {
                 // CASE 2: Triangle
                 if (node == parent->left) {
 
-                    node = parent;
-                    rotateRight(node);
+                    rotateRight(parent);
 
+                    // UPDATE POINTERS
+                    node = parent;
+                    parent = node->parent;
                 }
 
                 // CASE 3: Line
@@ -243,14 +248,10 @@ void RBTree::fixInsert(Node*& node) {
                 grandparent->color = RED;
 
                 rotateLeft(grandparent);
-
             }
-
         }
-
     }
 
     // Root must always be BLACK
     root->color = BLACK;
-
 }
