@@ -11,11 +11,10 @@ RBTree::RBTree() {
 Node* RBTree::getRoot() {
     return root;
 }
-// ===============================
 // MINIMUM
 // Finds smallest node in subtree
 // Used for successor deletion
-// ===============================
+
 Node* RBTree::minimum(Node* node) {
 
     // Keep going left
@@ -27,6 +26,40 @@ Node* RBTree::minimum(Node* node) {
 
     return node;
 }
+// TRANSPLANT
+// Replaces one subtree with another
+// Used during deletion
+void RBTree::transplant(Node* u, Node* v) {
+
+    // If u is root
+    if (u->parent == nullptr) {
+
+        root = v;
+
+    }
+
+    // If u is left child
+    else if (u == u->parent->left) {
+
+        u->parent->left = v;
+
+    }
+
+    // If u is right child
+    else {
+
+        u->parent->right = v;
+
+    }
+
+    // Update parent pointer
+    if (v != nullptr) {
+
+        v->parent = u->parent;
+
+    }
+}
+
 
 // Insert (basic BST version for now)
 void RBTree::insert(int data) {
