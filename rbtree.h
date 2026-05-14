@@ -42,7 +42,16 @@ public:
     void readFromFile(char filename[]);
     void printTree(Node* root, int space = 0);
 
-    Node* getRoot();
+    bool search(int data);
+
+    void remove(int data);
+
+    Node* minimum(Node* node);
+    void transplant(Node* u, Node* v);
+    void fixDelete(Node* node); 
+
+  Node* getRoot();
+  
 };
 
 #endif

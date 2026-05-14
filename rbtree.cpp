@@ -11,6 +11,22 @@ RBTree::RBTree() {
 Node* RBTree::getRoot() {
     return root;
 }
+// ===============================
+// MINIMUM
+// Finds smallest node in subtree
+// Used for successor deletion
+// ===============================
+Node* RBTree::minimum(Node* node) {
+
+    // Keep going left
+    while (node->left != nullptr) {
+
+        node = node->left;
+
+    }
+
+    return node;
+}
 
 // Insert (basic BST version for now)
 void RBTree::insert(int data) {
@@ -256,4 +272,22 @@ void RBTree::fixInsert(Node*& node) {
 
     // Root must always be BLACK
     root->color = BLACK;
+}
+bool RBTree::search(int data) {
+
+    Node* current = root;
+
+    while (current != nullptr) {
+
+        if (data == current->data)
+            return true;
+
+        if (data < current->data)
+            current = current->left;
+
+        else
+            current = current->right;
+    }
+
+    return false;
 }
