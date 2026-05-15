@@ -10,11 +10,21 @@ int main() {
     char filename[50];
 
     do {
-        cout << "\n1. Insert\n2. Read File\n3. Print\n4. Exit\n";
+        cout << "\n1. Insert\n";
+        cout << "2. Read File\n";
+        cout << "3. Print\n";
+        cout << "4. Search\n";
+        cout << "5. Remove\n";
+        cout << "6. Exit\n";
+
         cout << "Choice: ";
         cin >> choice;
 
+
+        // INSERT
+
         if (choice == 1) {
+
             cout << "Enter number: ";
             cin >> number;
 
@@ -24,18 +34,50 @@ int main() {
                 cout << "Number must be 1-999." << endl;
         }
 
+
+        // READ FILE
+
         else if (choice == 2) {
+
             cout << "Filename: ";
             cin >> filename;
 
             tree.readFromFile(filename);
         }
 
+
+        // PRINT
+
         else if (choice == 3) {
+
             tree.printTree(tree.getRoot(), 0);
         }
 
-    } while (choice != 4);
+
+        // SEARCH
+
+        else if (choice == 4) {
+
+            cout << "Enter number to search: ";
+            cin >> number;
+
+            if (tree.search(number))
+                cout << "Found in tree." << endl;
+            else
+                cout << "Not found." << endl;
+        }
+
+        // REMOVE
+ 
+        else if (choice == 5) {
+
+            cout << "Enter number to remove: ";
+            cin >> number;
+
+            tree.remove(number);
+        }
+
+    } while (choice != 6);
 
     return 0;
 }

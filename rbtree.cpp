@@ -61,6 +61,67 @@ void RBTree::transplant(Node* u, Node* v) {
 }
 
 
+// REMOVE
+// Deletes a node from tree
+// (leaf + one child for now)
+
+void RBTree::remove(int data) {
+
+    // Start at root
+    Node* current = root;
+
+
+    // FIND NODE
+
+    while (current != nullptr &&
+           current->data != data) {
+
+        if (data < current->data)
+            current = current->left;
+
+        else
+            current = current->right;
+    }
+
+    // Number not found
+    if (current == nullptr) {
+
+        cout << "Number not found." << endl;
+        return;
+    }
+
+
+    // CASE 1: No left child
+
+    if (current->left == nullptr) {
+
+        transplant(current,
+                   current->right);
+    }
+
+
+    // CASE 2: No right child
+
+    else if (current->right == nullptr) {
+
+        transplant(current,
+                   current->left);
+    }
+
+
+    // TEMPORARY:
+    // Two children not added yet
+    
+    else {
+
+        cout << "Two-child delete coming next step." << endl;
+        return;
+    }
+
+    delete current;
+}
+
+
 // Insert (basic BST version for now)
 void RBTree::insert(int data) {
     Node* newNode = new Node(data);
@@ -224,9 +285,9 @@ void RBTree::fixInsert(Node*& node) {
         if (grandparent == nullptr)
             break;
 
-        // ==========================
+    
         // Parent is LEFT child
-        // ==========================
+    
         if (parent == grandparent->left) {
 
             Node* uncle = grandparent->right;
@@ -263,9 +324,9 @@ void RBTree::fixInsert(Node*& node) {
             }
         }
 
-        // ==========================
+    
         // Parent is RIGHT child
-        // ==========================
+    
         else {
 
             Node* uncle = grandparent->left;
