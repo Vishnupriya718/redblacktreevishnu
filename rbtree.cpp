@@ -60,16 +60,11 @@ void RBTree::transplant(Node* u, Node* v) {
     }
 }
 
-
 // REMOVE
-// Deletes a node from tree
-// (leaf + one child for now)
-
+// Deletes node from tree
 void RBTree::remove(int data) {
 
-    // Start at root
     Node* current = root;
-
 
     // FIND NODE
 
@@ -83,72 +78,98 @@ void RBTree::remove(int data) {
             current = current->right;
     }
 
-    // Number not found
+    // Not found
     if (current == nullptr) {
 
         cout << "Number not found." << endl;
         return;
     }
 
+    Node* replacement = nullptr;
+    Color originalColor =
+        current->color;
 
-    // CASE 1: No left child
+
+    // CASE 1:
+    // No left child
 
     if (current->left == nullptr) {
+
+        replacement =
+            current->right;
 
         transplant(current,
                    current->right);
     }
 
-
-    // CASE 2: No right child
+    // CASE 2:
+    // No right child
 
     else if (current->right == nullptr) {
+
+        replacement =
+            current->left;
 
         transplant(current,
                    current->left);
     }
 
+    // CASE 3:
+    // Two children
+    else {
 
-// ==========================
-// CASE 3: Two children
-// ==========================
-else {
+        // Find successor
+        Node* successor =
+            minimum(current->right);
 
-    // Find successor
-    Node* successor =
-        minimum(current->right);
+        originalColor =
+            successor->color;
 
-    // If successor is not direct child
-    if (successor->parent != current) {
+        replacement =
+            successor->right;
 
-        transplant(successor,
-                    successor->right);
+        // If successor isn't direct child
+        if (successor->parent != current) {
 
-        successor->right =
-            current->right;
+            transplant(successor,
+                        successor->right);
 
-        successor->right->parent =
+            successor->right =
+                current->right;
+
+            successor->right->parent =
+                successor;
+        }
+
+        else {
+
+            if (replacement != nullptr)
+                replacement->parent =
+                    successor;
+        }
+
+        // Replace node
+        transplant(current,
+                    successor);
+
+        successor->left =
+            current->left;
+
+        successor->left->parent =
             successor;
+
+        // Preserve color
+        successor->color =
+            current->color;
     }
 
-    // Replace current with successor
-    transplant(current,
-                successor);
-
-    successor->left =
-        current->left;
-
-    successor->left->parent =
-        successor;
-
-    // Keep original color
-    successor->color =
-        current->color;
-}
-
     delete current;
-}
 
+    // FIX RED-BLACK TREE
+
+    if (originalColor == BLACK)
+        fixDelete(replacement);
+}
 
 // Insert (basic BST version for now)
 void RBTree::insert(int data) {
@@ -313,9 +334,9 @@ void RBTree::fixInsert(Node*& node) {
         if (grandparent == nullptr)
             break;
 
-        // ==========================
+
         // Parent is LEFT child
-        // ==========================
+
         if (parent == grandparent->left) {
 
             Node* uncle = grandparent->right;
@@ -351,9 +372,9 @@ void RBTree::fixInsert(Node*& node) {
         }
 
 
-        // ==========================
+
         // Parent is RIGHT child
-        // ==========================
+
         else {
 
             Node* uncle = grandparent->left;
@@ -392,10 +413,152 @@ void RBTree::fixInsert(Node*& node) {
     // Root must always be BLACK
     root->color = BLACK;
 }
+// ===============================
+// FIX DELETE
+// Restores Red-Black properties
+// after deletion
+// ===============================
+void RBTree::fixDelete(Node* node) {
 
+    while (node != root &&
+           node != nullptr &&
+           node->color == BLACK) {
 
+        // Node is LEFT child
+        if (node == node->parent->left) {
 
+            Node* sibling =
+                node->parent->right;
 
+            // CASE 1:
+            // Sibling RED
+            if (sibling != nullptr &&
+                sibling->color == RED) {
+
+                sibling->color = BLACK;
+                node->parent->color = RED;
+
+                rotateLeft(node->parent);
+
+                sibling =
+                    node->parent->right;
+            }
+
+            // CASE 2:
+            // Sibling children BLACK
+            if ((sibling->left == nullptr ||
+                 sibling->left->color == BLACK) &&
+
+                (sibling->right == nullptr ||
+                 sibling->right->color == BLACK)) {
+
+                sibling->color = RED;
+                node = node->parent;
+            }
+
+            else {
+                // CASE 3
+                if (sibling->right == nullptr ||
+                    sibling->right->color == BLACK) {
+
+                    if (sibling->left != nullptr)
+                        sibling->left->color =
+                            BLACK;
+
+                    sibling->color = RED;
+
+                    rotateRight(sibling);
+
+                    sibling =
+                        node->parent->right;
+                }
+
+                // CASE 4
+                sibling->color =
+                    node->parent->color;
+
+                node->parent->color =
+                    BLACK;
+
+                if (sibling->right != nullptr)
+                    sibling->right->color =
+                        BLACK;
+
+                rotateLeft(node->parent);
+
+                node = root;
+            }
+        }
+
+        // Mirror case
+        else {
+
+            Node* sibling =
+                node->parent->left;
+
+            // CASE 1
+            if (sibling != nullptr &&
+                sibling->color == RED) {
+
+                sibling->color = BLACK;
+                node->parent->color = RED;
+
+                rotateRight(node->parent);
+
+                sibling =
+                    node->parent->left;
+            }
+
+            // CASE 2
+            if ((sibling->right == nullptr ||
+                 sibling->right->color == BLACK) &&
+
+                (sibling->left == nullptr ||
+                 sibling->left->color == BLACK)) {
+
+                sibling->color = RED;
+                node = node->parent;
+            }
+
+            else {
+
+                // CASE 3
+                if (sibling->left == nullptr ||
+                    sibling->left->color == BLACK) {
+
+                    if (sibling->right != nullptr)
+                        sibling->right->color =
+                            BLACK;
+
+                    sibling->color = RED;
+
+                    rotateLeft(sibling);
+
+                    sibling =
+                        node->parent->left;
+                }
+
+                // CASE 4
+                sibling->color =
+                    node->parent->color;
+
+                node->parent->color =
+                    BLACK;
+
+                if (sibling->left != nullptr)
+                    sibling->left->color =
+                        BLACK;
+
+                rotateRight(node->parent);
+
+                node = root;
+            }
+        }
+    }
+
+    if (node != nullptr)
+        node->color = BLACK;
+}
 
 
 
